@@ -8,12 +8,15 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("authorization-frontend"));
 
 app.use("/api/user", userRouter);
 
 const port = process.env.PORT;
-const mongoURI = process.env.MONGO_URL;
+const mongoURI = process.env.MONGO_URI || process.env.MONGO_URL;
+
+if (!mongoURI) {
+    throw new Error("Missing MongoDB connection string. Set MONGO_URI or MONGO_URL in .env.");
+}
 
 mongoose
     .connect(mongoURI)
